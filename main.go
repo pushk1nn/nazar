@@ -5,5 +5,6 @@ import (
 )
 
 func main() {
+	// Start listening for new packets
 	logging.Listen()
 }
