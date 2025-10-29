@@ -5,20 +5,18 @@ import (
 
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
-	"github.com/google/gopacket/pfring"
+	"github.com/google/gopacket/pcap"
 )
 
 // Listen will initialize the interface to be used for packet captures,
 // then start the loop to handle packets.
 func Listen() {
-	if ring, err := pfring.NewRing("wlp61s0", 65536, pfring.FlagPromisc); err != nil {
+	if handle, err := pcap.OpenLive("wlp61s0", 1600, true, pcap.BlockForever); err != nil {
 		panic(err)
-	} else if err := ring.SetBPFFilter("tcp and port 22"); err != nil {
-		panic(err)
-	} else if err := ring.Enable(); err != nil {
+	} else if err := handle.SetBPFFilter("tcp and port 80"); err != nil {
 		panic(err)
 	} else {
-		packetSource := gopacket.NewPacketSource(ring, layers.LinkTypeEthernet)
+		packetSource := gopacket.NewPacketSource(handle, handle.LinkType())
 
 		for packet := range packetSource.Packets() {
 			printPacket(packet)
@@ -26,6 +24,7 @@ func Listen() {
 	}
 }
 
+// printPacket prints the packet's source port.
 func printPacket(packet gopacket.Packet) {
 	if tcpLayer := packet.Layer(layers.LayerTypeTCP); tcpLayer != nil {
 		tcp, _ := tcpLayer.(*layers.TCP)
