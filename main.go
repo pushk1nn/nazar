@@ -6,10 +6,11 @@ import (
 	"github.com/pushk1nn/nazar/logging"
 )
 
-// device gets the environment variable to listen on
-var device = os.Getenv("IFACE")
-
 func main() {
+	// Get interface name from user input
+	args := os.Args[1:]
+	iface := args[0]
+
 	// Start listening for new packets
-	logging.Listen(device)
+	logging.Listen(iface)
 }

@@ -10,8 +10,8 @@ import (
 
 // Listen will initialize the interface to be used for packet captures,
 // then start the loop to handle packets.
-func Listen(dev string) {
-	if handle, err := pcap.OpenLive(dev, 1600, true, pcap.BlockForever); err != nil {
+func Listen(iface string) {
+	if handle, err := pcap.OpenLive(iface, 1600, true, pcap.BlockForever); err != nil {
 		panic(err)
 	} else if err := handle.SetBPFFilter("tcp src port 22"); err != nil { // For early development, listen for ssh
 		panic(err)
